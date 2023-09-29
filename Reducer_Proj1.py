@@ -1,76 +1,51 @@
-#reducer
-
 import sys
 import numpy as np
-from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import LinearRegression
 
-# Define the reducer function
-def reduce_function():
-    # Initialize lists to store target and predictor variables
-    y = []
-    X = []
+# Initialize variables to store data for regression analysis
+unique_keys = []  # List to store unique keys
+indicator_values = []  # List to store indicator values
+predictor_values = []  # List to store predictor values
 
-    # Iterate over key-value pairs from the map phase
-    current_key = None
-    for line in sys.stdin:
-        try:
-            key, value = line.strip().split('\t')
-            indicator, predictor = value.split(',')
-            
-            # Check if the key has changed (new predictor variable)
-            if key != current_key:
-                # If it's a new predictor variable, process the previous predictor variable (if any)
-                if current_key is not None:
-                    # Convert lists to numpy arrays
-                    y = np.array(y)
-                    X = np.array(X)
+# Process input key-value pairs from standard input
+for line in sys.stdin:
+    try:
+        # Split the input line into key and value
+        key, value = line.strip().split('\t')
+        
+        # Split the value into indicator and predictor values
+        indicator, predictors = value.split(',')
+        
+        # Convert to int and float as needed
+        indicator = int(indicator)
+        predictors = [float(x) for x in predictors.split(',')]
+        
+        # Append data to respective lists
+        unique_keys.append(key)
+        indicator_values.append(indicator)
+        predictor_values.append(predictors)
 
-                    # Ensure X is a 2D array
-                    if X.ndim == 1:
-                        X = X.reshape(-1, 1)
+    except Exception as e:
+        # Handle any exceptions gracefully
+        pass
 
-                    # Create and fit a logistic regression model
-                    model = LogisticRegression()
-                    model.fit(X, y)
+# Check if we have data to perform regression analysis
+if len(unique_keys) > 0:
+    # Convert lists to NumPy arrays for regression
+    X = np.array(predictor_values)
+    y = np.array(indicator_values)
 
-                    # Print the model parameters (coefficients and intercept)
-                    slope = model.coef_
-                    intercept = model.intercept_
-                    print(f"Slope: {slope[0][0]}")
-                    print(f"Intercept: {intercept[0]}")
+    # Perform linear regression
+    model = LinearRegression()
+    model.fit(X, y)
 
-                # Reset lists for the new predictor variable
-                current_key = key
-                y = []
-                X = []
+    # Get regression coefficients
+    coefficients = model.coef_
+    intercept = model.intercept_
 
-            # Add the indicator and predictor values to the lists
-            y.append(int(indicator))
-            X.append(float(predictor))
+    # Output the regression results
+    print(f'Coefficients: {coefficients}')
+    print(f'Intercept: {intercept}')
+    print(f'Unique Keys: {unique_keys}')
 
-        except Exception as e:
-            # Handle any exceptions gracefully
-            pass
-
-    # Process the last predictor variable (if any)
-    if current_key is not None:
-        # Convert lists to numpy arrays
-        y = np.array(y)
-        X = np.array(X)
-
-        # Ensure X is a 2D array
-        if X.ndim == 1:
-            X = X.reshape(-1, 1)
-
-        # Create and fit a logistic regression model
-        model = LogisticRegression()
-        model.fit(X, y)
-
-        # Print the model parameters for the last predictor variable
-        slope = model.coef_
-        intercept = model.intercept_
-        print(f"Slope: {slope[0][0]}")
-        print(f"Intercept: {intercept[0]}")
-
-# Call the reduce function
-reduce_function()
+# Note: You can further enhance this code to handle multiple regression models if needed
