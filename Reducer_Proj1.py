@@ -25,6 +25,10 @@ def reduce_function():
                     y = np.array(y)
                     X = np.array(X)
 
+                    # Ensure X is a 2D array
+                    if X.ndim == 1:
+                        X = X.reshape(-1, 1)
+
                     # Create and fit a logistic regression model
                     model = LogisticRegression()
                     model.fit(X, y)
@@ -42,7 +46,7 @@ def reduce_function():
 
             # Add the indicator and predictors to the lists
             y.append(float(indicator))
-            X.append([float(x) for x in predictors])
+            X.extend([float(x) for x in predictors])  # Extend instead of append
 
         except Exception as e:
             # Print the exception for debugging
@@ -52,6 +56,11 @@ def reduce_function():
     if current_identifier is not None:
         y = np.array(y)
         X = np.array(X)
+
+        # Ensure X is a 2D array
+        if X.ndim == 1:
+            X = X.reshape(-1, 1)
+
         model = LogisticRegression()
         model.fit(X, y)
         prediction = model.predict_proba(X)[:, 1]
