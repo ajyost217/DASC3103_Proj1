@@ -1,8 +1,8 @@
-#!/usr/bin/env python
+#reducer
 
 import sys
 import numpy as np
-from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import LinearRegression
 
 # Define the reducer function
 def reduce_function():
@@ -11,68 +11,31 @@ def reduce_function():
     X = []
 
     # Iterate over key-value pairs from the map phase
-    current_identifier = None
     for line in sys.stdin:
         try:
-            key, value = line.strip().split('\t')
-            indicator, *predictors = value.split(',')
+            _, target, *predictors = line.strip().split('\t')
             
-            # Check if the identifier has changed (new record)
-            if key != current_identifier:
-                # If it's a new record, process the previous record (if any)
-                if current_identifier is not None:
-                    # Print debug information
-                    print(f'Processing identifier: {current_identifier}')
-                    print(f'Number of samples: {len(y)}')
-
-                    # Convert lists to numpy arrays
-                    y = np.array(y)
-                    X = np.array(X)
-
-                    # Ensure X is a 2D array
-                    if X.ndim == 1:
-                        X = X.reshape(-1, 1)
-
-                    # Create and fit a logistic regression model
-                    model = LogisticRegression()
-                    model.fit(X, y)
-
-                    # Make a prediction (e.g., probability of class 1)
-                    prediction = model.predict_proba(X)[:, 1]
-
-                    # Print the identifier and the prediction(s)
-                    print(f'{current_identifier}\t{",".join(map(str, prediction))}')
-
-                # Reset lists for the new record
-                current_identifier = key
-                y = []
-                X = []
-
-            # Add the indicator and predictors to the lists
-            y.append(float(indicator))
-            X.extend([float(x) for x in predictors])  # Extend instead of append
+            # Add the target and predictor variables to the lists
+            y.append(float(target))
+            X.append([float(x) for x in predictors])
 
         except Exception as e:
             # Print the exception for debugging
             print(f'Error in reduce function: {e}, Line: {line.strip()}')
 
-    # Process the last record (if any)
-    if current_identifier is not None:
-        # Print debug information
-        print(f'Processing identifier: {current_identifier}')
-        print(f'Number of samples: {len(y)}')
+    # Convert lists to numpy arrays
+    y = np.array(y)
+    X = np.array(X)
 
-        y = np.array(y)
-        X = np.array(X)
+    # Create and fit a linear regression model
+    model = LinearRegression()
+    model.fit(X, y)
 
-        # Ensure X is a 2D array
-        if X.ndim == 1:
-            X = X.reshape(-1, 1)
-
-        model = LogisticRegression()
-        model.fit(X, y)
-        prediction = model.predict_proba(X)[:, 1]
-        print(f'{current_identifier}\t{",".join(map(str, prediction))}')
+    # Print the regression coefficients (slope and intercept)
+    slope = model.coef_
+    intercept = model.intercept_
+    print(f"Slope (Regression Coefficient): {slope}")
+    print(f"Intercept: {intercept}")
 
 # Call the reduce function
 reduce_function()
