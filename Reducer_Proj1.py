@@ -1,4 +1,4 @@
-#reducer
+#!/usr/bin/env python
 
 import sys
 import numpy as np
@@ -21,6 +21,10 @@ def reduce_function():
             if key != current_identifier:
                 # If it's a new record, process the previous record (if any)
                 if current_identifier is not None:
+                    # Print debug information
+                    print(f'Processing identifier: {current_identifier}')
+                    print(f'Number of samples: {len(y)}')
+
                     # Convert lists to numpy arrays
                     y = np.array(y)
                     X = np.array(X)
@@ -54,6 +58,10 @@ def reduce_function():
 
     # Process the last record (if any)
     if current_identifier is not None:
+        # Print debug information
+        print(f'Processing identifier: {current_identifier}')
+        print(f'Number of samples: {len(y)}')
+
         y = np.array(y)
         X = np.array(X)
 
