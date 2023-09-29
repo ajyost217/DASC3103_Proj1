@@ -31,30 +31,27 @@ class MyMRJob(MRJob):
 
     def reducer(self, key, values):
         try:
-            X = []
-            y = []
+            # Collect the data for linear regression
+            X = []  # Predictor variables
+            y = []  # Indicator variable
 
             for value_type, indicator, predictors in values:
                 if value_type == 'data':
-                    # Process data records
-                    # Add predictors to X and indicator to y
-                    X.append(list(map(float, predictors)))
+                    X.append(predictors)
                     y.append(indicator)
 
             if X and y:
-                # Perform linear regression using NumPy
-                X = np.array(X)
-                y = np.array(y)
-                X_transpose = np.transpose(X)
+                X = np.array(X, dtype=float)
+                y = np.array(y, dtype=float)
 
-                # Calculate coefficients (b) using the normal equation
-                b = np.linalg.inv(X_transpose.dot(X)).dot(X_transpose).dot(y)
+                # Perform linear regression
+                coefficients = np.linalg.lstsq(X, y, rcond=None)[0]
 
-                # Now, you can use the coefficients for prediction
-                predicted_indicator = X.dot(b)
+                # Predict the indicator variable
+                predicted_indicator = np.dot(X[0], coefficients)
 
-                # Emit the unique key and predicted indicator as the result
-                yield key, ('result', predicted_indicator.tolist())
+                # Emit the result
+                yield key, ('result', predicted_indicator, list(coefficients))
 
         except Exception as e:
             # Handle any exceptions gracefully
