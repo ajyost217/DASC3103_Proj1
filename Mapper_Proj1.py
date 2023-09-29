@@ -10,7 +10,7 @@ def map_function(line):
         
         # Extract the target variable (first column) and predictor variables (remaining columns)
         target = float(fields[8])
-        predictors = [float(x) for x in fields[0:7]]
+        predictors = [float(x) for x in fields[6]]
         
         # Emit key-value pairs for the target variable (key: 'TARGET') and each predictor variable
         # Each predictor variable is emitted as a separate key-value pair
