@@ -13,11 +13,14 @@ def reduce_function():
     # Iterate over key-value pairs from the map phase
     for line in sys.stdin:
         try:
-            _, target, *predictors = line.strip().split('\t')
+            _, target, predictors_str = line.strip().split('\t')
+            
+            # Convert the serialized predictor variables back to a list
+            predictors = [float(x) for x in predictors_str.split(',')]
             
             # Add the target and predictor variables to the lists
             y.append(float(target))
-            X.append([float(x) for x in predictors])
+            X.append(predictors)
 
         except Exception as e:
             # Print the exception for debugging
