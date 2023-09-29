@@ -8,19 +8,19 @@ def map_function(line):
         # Split the input line into fields (assuming CSV format)
         fields = line.strip().split(',')
         
-        # Extract the target variable (first column) and predictor variables (remaining columns)
-        target = float(fields[8])
-        predictors = [float(x) for x in fields[6]]
+        # Extract the indicator variable (0 or 1)
+        indicator = int(fields[8])
         
-        # Emit key-value pairs for the target variable (key: 'TARGET') and each predictor variable
-        # Each predictor variable is emitted as a separate key-value pair
-        print(f'TARGET\t{target}')
-        for i, predictor in enumerate(predictors):
-            print(f'PREDICTOR_{i}\t{predictor}')
+        # Loop through predictor variables (starting from the second column)
+        for i, predictor in enumerate(fields[0:7], start=1):
+            # Emit key-value pairs with a common key for all predictor variables
+            # Key: predictor variable index (e.g., '0', '1', '2', ...)
+            # Value: indicator variable and the predictor value
+            print(f'{i}\t{indicator},{predictor}')
 
     except Exception as e:
-        # Print the exception for debugging
-        print(f'Error in map function: {e}, Line: {line.strip()}')
+        # Handle any exceptions gracefully
+        pass
 
 # Process input lines from standard input
 for line in sys.stdin:
