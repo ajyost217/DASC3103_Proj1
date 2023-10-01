@@ -26,9 +26,8 @@ for line in sys.stdin:
         predictor_values.append(predictors)
 
     except Exception as e:
-        print("ERROR IN REDUCE")
-        # Handle any exceptions gracefully
-        pass
+        # Handle exceptions and log the error message
+        sys.stderr.write(f'Error processing input: {str(e)}\n')
 
 # Check if we have data to perform regression analysis
 if len(unique_keys) > 0:
@@ -48,5 +47,3 @@ if len(unique_keys) > 0:
     print(f'Coefficients: {coefficients}')
     print(f'Intercept: {intercept}')
     print(f'Unique Keys: {unique_keys}')
-
-# Note: You can further enhance this code to handle multiple regression models if needed
