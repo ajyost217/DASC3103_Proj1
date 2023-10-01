@@ -14,14 +14,14 @@ def map_function(line):
         # Extract the indicator variable (0 or 1)
         indicator = int(fields[8])
         
-        # Extract the unique key (assuming it's in a specific column, adjust the index as needed)
-        unique_key = fields[7]  # Change the index to the appropriate column
+        # Create a unique key by combining relevant fields (e.g., Age and Outcome)
+        unique_key = f'{fields[7]}_{fields[8]}'  # Combine Age and Outcome
         
-        # Loop through predictor variables (use the specific column names)
+        # Extract predictor variables using specific column names
         pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, diabetes_pedigree, age, outcome = fields[:9]
         
         # Emit key-value pairs with the unique key as the key
-        # Key: unique key read from the dataset
+        # Key: unique key generated from Age and Outcome
         # Value: Indicator variable and predictor values
         print(f'{unique_key}\t{indicator},{pregnancies},{glucose},{blood_pressure},{skin_thickness},{insulin},{bmi},{diabetes_pedigree},{age},{outcome}')
 
