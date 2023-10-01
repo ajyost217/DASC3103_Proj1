@@ -21,6 +21,7 @@ def map_function(line):
 
     except Exception as e:
         # Handle any exceptions gracefully
+        print("ERROR IN MAPPING")
         pass
 
 # Process input lines from standard input
