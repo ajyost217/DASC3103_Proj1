@@ -1,4 +1,5 @@
 import sys
+import csv
 import numpy as np
 from sklearn.linear_model import LinearRegression
 
@@ -12,14 +13,15 @@ for line in sys.stdin:
     try:
         # Split the input line into key and value
         key, value = line.strip().split('\t')
-        
-        # Split the value into indicator and predictor values
-        indicator, predictors = value.split(',')
-        
-        # Convert to int and float as needed
-        indicator = int(indicator)
-        predictors = [float(x) for x in predictors.split(',')]
-        
+
+        # Use CSV reader to properly parse the value
+        value_reader = csv.reader([value])
+        row = next(value_reader)
+
+        # The row variable now contains a list of values
+        indicator = int(row[0])
+        predictors = [float(x) for x in row[1:]]
+
         # Append data to respective lists
         unique_keys.append(key)
         indicator_values.append(indicator)
