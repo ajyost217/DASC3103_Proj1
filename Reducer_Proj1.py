@@ -26,6 +26,7 @@ for line in sys.stdin:
         predictor_values.append(predictors)
 
     except Exception as e:
+        print("ERROR IN REDUCE")
         # Handle any exceptions gracefully
         pass
 
