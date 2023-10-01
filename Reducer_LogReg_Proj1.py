@@ -49,7 +49,7 @@ if len(unique_keys) > 0:
     y = np.array(indicator_values)
 
     # Perform logistic regression
-    model = LogisticRegression()
+    model = LogisticRegression(max_iter=1000)
     model.fit(X, y)
 
     # Get coefficients and intercept
