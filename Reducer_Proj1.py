@@ -18,8 +18,19 @@ for line in sys.stdin:
         value_reader = csv.reader([value])
         row = next(value_reader)
 
+        # Ensure that the row contains at least one value
+        if len(row) < 1:
+            sys.stderr.write(f'Error: Value field is missing or empty for key {key}\n')
+            continue  # Skip this input line and continue processing
+
         # The row variable now contains a list of values
         indicator = int(row[0])
+        
+        # Check if there are enough predictor values
+        if len(row) < 2:
+            sys.stderr.write(f'Error: Not enough predictor values for key {key}\n')
+            continue  # Skip this input line and continue processing
+        
         predictors = [float(x) for x in row[1:]]
 
         # Append data to respective lists
