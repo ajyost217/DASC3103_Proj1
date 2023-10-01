@@ -1,3 +1,5 @@
+import sys
+
 def map_function(line):
     expected_headers = "Pregnancies,Glucose,BloodPressure,SkinThickness,Insulin,BMI,DiabetesPedigreeFunction,Age,Outcome"
     
